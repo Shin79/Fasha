@@ -16,9 +16,9 @@ public class OrderTriggerTest {
 		insert priceBook;
         
 		// Création d'un compte test sans commande et un compte test avec commande 
-		Account testAccountNoOrder = new Account(Name = 'AccountTest1');
-		Account testAccountWithOrder = new Account(Name = 'AccountTest2', Chiffre_d_affaire__c = 200);
-		insert new Account[]{testAccountNoOrder, testAccountWithOrder};
+		Account accountWithoutOrderTest = new Account(Name = 'AccountTest1');
+		Account accountWithOrderTest = new Account(Name = 'AccountTest2', Chiffre_d_affaire__c = 300);
+		insert new Account[]{accountWithoutOrderTest, accountWithOrderTest};
 	}
     // Méthode de test qui met à jour le CA d'un compte pour une première commande 
     @isTest
@@ -61,7 +61,7 @@ public class OrderTriggerTest {
 		Test.stopTest();
 		Account accAfterUpdate = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'AccountTest2'];
 		// Vérification de l'assertion
-		System.assertEquals(480, accAfterUpdate.Chiffre_d_affaire__c);
+		System.assertEquals(500, accAfterUpdate.Chiffre_d_affaire__c);
 	}
     
     
