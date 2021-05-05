@@ -9,11 +9,10 @@ public class OrderTriggerTest {
         
 		// Entrée du produit au catalogue de prix
 		PricebookEntry priceBook = new PricebookEntry(
-            								//Explain this line 
-											Pricebook2Id = Test.getStandardPricebookId(),
-											Product2Id = product1.Id,
-											UnitPrice = 200,
-											IsActive = true);
+			Pricebook2Id = Test.getStandardPricebookId(),
+			Product2Id = product1.Id,
+			UnitPrice = 200,
+			IsActive = true);
 		insert priceBook;
         
 		// Création d'un compte test sans commande et un compte test avec commande 
@@ -41,7 +40,7 @@ public class OrderTriggerTest {
 		Test.stopTest();
 		Account accAfterUpdate = [SELECT Id,Chiffre_d_affaire__c FROM Account WHERE Name = 'TestAcc'];
 		// Vérification de l'assertion
-		System.assertEquals(200, accAfterUpdate.Chiffre_d_affaire__c,'The revenue should be 200');
+		System.assertEquals(200, accAfterUpdate.Chiffre_d_affaire__c);
 	}
     
     // Méthode de test qui met à jour un compte avec un chiffre d'affaire existant 
