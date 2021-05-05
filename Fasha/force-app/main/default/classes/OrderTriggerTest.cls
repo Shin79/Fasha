@@ -16,14 +16,14 @@ public class OrderTriggerTest {
 		insert priceBook;
         
 		// Création d'un compte test sans commande et un compte test avec commande 
-		Account testAccountNoOrder = new Account(Name = 'TestAcc');
-		Account testAccountWithOrder = new Account(Name = 'TestAccWithOrder', Chiffre_d_affaire__c = 1000);
+		Account testAccountNoOrder = new Account(Name = 'AccountTest1');
+		Account testAccountWithOrder = new Account(Name = 'AccountTest2', Chiffre_d_affaire__c = 200);
 		insert new Account[]{testAccountNoOrder, testAccountWithOrder};
 	}
     // Méthode de test qui met à jour le CA d'un compte pour une première commande 
     @isTest
 	static void updateAccountCAWithFirstOrder(){
-		Account acc = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'TestAcc'];
+		Account acc = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'AccountTest1'];
         acc.Chiffre_d_affaire__c = 0;
         update acc;
 		PricebookEntry pbe = [SELECT Id, Pricebook2Id FROM PricebookEntry WHERE UnitPrice = 200];
@@ -38,7 +38,7 @@ public class OrderTriggerTest {
 		o1.Status = 'Ordered';
 		update o1; 
 		Test.stopTest();
-		Account accAfterUpdate = [SELECT Id,Chiffre_d_affaire__c FROM Account WHERE Name = 'TestAcc'];
+		Account accAfterUpdate = [SELECT Id,Chiffre_d_affaire__c FROM Account WHERE Name = 'AccountTest1'];
 		// Vérification de l'assertion
 		System.assertEquals(200, accAfterUpdate.Chiffre_d_affaire__c);
 	}
@@ -46,9 +46,8 @@ public class OrderTriggerTest {
     // Méthode de test qui met à jour un compte avec un chiffre d'affaire existant 
     @isTest
 	static void updateAccountCAWithOrders(){
-		Account acc = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'TestAccWithOrder'];
+		Account acc = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'AccountTest2'];
 		PricebookEntry pbe = [SELECT Id, Pricebook2Id FROM PricebookEntry WHERE UnitPrice = 200];
-		System.assertEquals(1000, acc.Chiffre_d_affaire__c,'The revenu should be Null');
 		Test.startTest();
 		// Création d'une commande 
 		Order o1 = new Order(AccountId = acc.Id, Status = 'Draft', Pricebook2Id = pbe.Pricebook2Id, EffectiveDate = date.today());
@@ -60,9 +59,9 @@ public class OrderTriggerTest {
 		o1.Status = 'Ordered';
 		update o1; 
 		Test.stopTest();
-		Account accAfterUpdate = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'TestAccWithOrder'];
+		Account accAfterUpdate = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'AccountTest2'];
 		// Vérification de l'assertion
-		System.assertEquals(1200, accAfterUpdate.Chiffre_d_affaire__c);
+		System.assertEquals(480, accAfterUpdate.Chiffre_d_affaire__c);
 	}
     
     
