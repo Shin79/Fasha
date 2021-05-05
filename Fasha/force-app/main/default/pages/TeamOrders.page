@@ -1,0 +1,19 @@
+<apex:page controller="TeamOrdersController">        
+ 
+    <apex:pageBlock title="Total des commandes par commercial">
+        <apex:pageBlockTable value="{!groupedResults}" var="order">
+            <apex:column value="{!order['ordName']}">
+                <apex:facet name="header">Nom du commercial</apex:facet>
+            </apex:column>
+            <apex:column value="{!(ROUND(order['ordAvg'],2))} €">
+                <apex:facet name="header">Panier Moyen</apex:facet>
+            </apex:column>
+            <apex:column value="{!order['ordCount']}">
+                <apex:facet name="header">Nombre de commandes</apex:facet>
+            </apex:column>
+            <apex:column value="{!(ROUND(order['ordSum'],2))} €">
+                <apex:facet name="header">Montant Total</apex:facet>
+            </apex:column>
+        </apex:pageBlockTable>   
+    </apex:pageBlock>
+</apex:page>

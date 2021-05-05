@@ -1,0 +1,131 @@
+trigger OrderTrigger on Order (after insert, after update) {
+
+    List<Order> orderList = new List<Order>();
+    Set<Id> ordID = new Set<Id>();
+    
+    for (Order o : Trigger.new){
+       ordID.add(o.AccountId);
+       orderList.add(o);
+    }   
+    List<Account> AccID = ([SELECT id, Chiffre_d_affaire__c FROM Account WHERE id IN :ordID]);
+    for(Integer i=0; i < AccID.size(); i++){
+        Account myAccount = AccID[i];
+        
+        for(integer j=0; j < orderList.size(); j++){         
+            if(Trigger.isAfter){
+                if(Trigger.isUpdate){ 
+                    Order oldOrder = Trigger.oldMap.get(orderList[j].Id);
+                    if(orderList[j].AccountId == myAccount.Id && orderList[j].Status =='Ordered' && oldOrder.Status == 'Draft'){
+                        myAccount.Chiffre_d_affaire__c += orderList[j].TotalAmount;
+                    } else if(orderList[j].Status =='Draft' && oldOrder.Status == 'Ordered'){
+                        myAccount.Chiffre_d_affaire__c -= orderList[j].TotalAmount;
+                    }  
+                    if(Trigger.isInsert) {
+                        if(orderList[j].AccountId == myAccount.Id && orderList[j].Status =='Ordered'){
+                            myAccount.Chiffre_d_affaire__c += orderList[j].TotalAmount;  
+                        }             
+                    }
+                }
+            }
+        }
+    }
+        update AccID;
+}
+
+
+
+
+
+public class OrderTriggerHandler {
+    
+    public static void handleAfterInsert(List<Order> newOrder) {  
+        Set<Id> ordID = new Set<Id>();
+        ordID.add(newOrder.AccountId);
+       
+        List<Account> AccID = ([SELECT id, Chiffre_d_affaire__c FROM Account WHERE id IN :ordID]);
+        for(Integer i=0; i < AccID.size(); i++){
+            Account myAccount = AccID[i];
+                if(newOrder.AccountId == myAccount.Id && newOrder.Status =='Ordered'){
+                    myAccount.Chiffre_d_affaire__c += newOrder.TotalAmount;  
+                }    
+            update AccID;
+        }        
+    }
+    public static void handleAfterUpdate(List<Order> newOrder,Map<Id,Order> oldOrder){
+        for(Order o : newOrder){
+            Set<Id> ordID = new Set<Id>();
+            ordID.add(o.AccountId);
+        }
+        List<Account> AccID = ([SELECT id, Chiffre_d_affaire__c FROM Account WHERE id IN :ordID]);
+        for(Integer i=0; i < AccID.size(); i++){
+            Account myAccount = AccID[i];
+            Order oldOrder = oldOrder.get(orderList[j].Id);
+                if(newOrder.AccountId == myAccount.Id && newOrder.Status =='Ordered' && oldOrder.Status == 'Draft'){
+                    myAccount.Chiffre_d_affaire__c += newOrder.TotalAmount;
+                } else if(newOrder.Status =='Draft' && oldOrder.Status == 'Ordered'){
+                    myAccount.Chiffre_d_affaire__c -= newOrder.TotalAmount;
+                }  
+            update AccID;
+        }
+        
+    }
+}
+
+trigger OrderTrigger on Order (after insert, after update) {
+
+    List<Order> orderList = new List<Order>();
+    //Set<Id> ordID = new Set<Id>();
+    for(Order o : Trigger.new){
+       // ordID.add(o.AccountId);
+        orderList.add(o);
+    }
+    for(integer j=0; j < orderList.size(); j++){ 
+        if(Trigger.isAfter){
+            if(Trigger.isUpdate){ 
+                OrderTriggerHandler.handleAfterUpdate(Trigger.new,Trigger.oldMap);
+            }
+            if(Trigger.isInsert) {
+                OrderTriggerHandler.handleAfterInsert(Trigger.new);                
+            }    
+        }  
+    }           
+}
+-------------------------------------------------------------------------------------------
+trigger OrderTrigger on Order (after update) {
+    
+    Map<Id, Decimal> totalAmountOrderMap = new Map<Id, Decimal>();     
+    Decimal orderAmount = 0;
+    
+    for(Order o : Trigger.New) {
+        if(Trigger.isUpdate) {
+            if(o.Status=='Ordered' && o.Status!= Trigger.oldMap.get(o.Id).Status) {
+                orderAmount += o.TotalAmount;
+                totalAmountOrderMap.put(o.AccountId, orderAmount);
+            }   
+        }        
+    if(totalAmountOrderMap.size() > 0){
+        OrderTriggerHandler.updateCA(totalAmountOrderMap);
+    }
+    }
+}
+
+
+public class OrderTriggerHandler {
+    public static void updateCA(Map<Id, Decimal> TotalAmountByAccountId){
+        List<Account> newAccountList = new List<Account>();         
+        List<Account> accountToUpdateList = [SELECT Id, Chiffre_d_affaire__c 
+                                             FROM Account 
+                                             WHERE Id IN :TotalAmountByAccountId.keySet()];
+          
+         for(Account acc : accountToUpdateList) {
+            acc.Chiffre_d_affaire__c += TotalAmountByAccountId.get(acc.Id);
+            newAccountList.add(new Account(Id = acc.Id, Chiffre_d_affaire__c = acc.Chiffre_d_affaire__c));
+         }          
+         update newAccountList;
+     }
+}
+
+
+
+
+
