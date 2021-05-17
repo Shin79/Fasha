@@ -1,10 +1,10 @@
-global class Batch01AccountChiffreAffaire implements Database.Batchable<sObject>{
-    
+global class AccountRevenue_Batch implements Database.Batchable<sObject>{
+    // Appel de la méthode start pour collecter les enregistrements à passer à la méthode d'interface execute
     global Database.QueryLocator start(Database.BatchableContext info){ 
         //Requeter seulement les comptes qui ont au moins une commande avec le Status 'Ordered'
         return Database.getQueryLocator([SELECT Id,Chiffre_d_affaire__c FROM Account WHERE Id IN (SELECT AccountId FROM Order WHERE Status='Ordered')]);
     }
-    // Exécution du batch
+    // Exécution du batch pour effectuer le traitement requis pour chaque lot de données
     global void execute(Database.BatchableContext info, List<Account> scope){      
         list<Order> listOrders =  [SELECT Id, TotalAmount, AccountId FROM Order];
         
@@ -16,7 +16,7 @@ global class Batch01AccountChiffreAffaire implements Database.Batchable<sObject>
                 }                   
             }
         }       
-        
+        // Mise à jour de la liste de comptes
         update scope;
     }        
     // Pas de post-traitement

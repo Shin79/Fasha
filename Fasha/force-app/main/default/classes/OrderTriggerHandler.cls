@@ -11,6 +11,7 @@ public class OrderTriggerHandler {
                     setAccountsIds.add(myOrder.AccountId);
 				}
 			}	
+		// On appelle la méthode de la classe UpdateAccount qui met à jour le compte
         UpdateAccount.updateAccountAmount(setAccountsIds,accountIdWithAmountsToAdd);
 	}
 }

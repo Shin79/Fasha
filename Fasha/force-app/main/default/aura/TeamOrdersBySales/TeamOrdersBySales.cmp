@@ -1,0 +1,20 @@
+<!-- On ajoute une référence au contrôleur Apex-->
+<aura:component controller="TeamOrdersBySalesController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+	<!-- stockage de valeurs dans les attributs name et type -->
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+
+    <!-- handler qui écoute l'évènement init déclenché lors du chargement du composant sur la page avec le gestionnaire d'actions init du contrôleur JS et exécute l'action identifiée par l'attribut action dans le fichier du contrôleur du composant-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+
+    <!-- the container element determine the height of the datatable -->
+    <div style="height: 300px">
+        <!--Le composant datatable utilise les valeurs stockées dans l'attribut Columns afin de déterminer le nombre de colonnes à afficher-->
+        <lightning:datatable
+                keyField="Name"
+                data="{! v.data }"
+                columns="{! v.columns }"
+                hideCheckboxColumn="true"/>
+    </div>
+</aura:component>

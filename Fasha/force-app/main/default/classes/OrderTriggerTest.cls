@@ -43,7 +43,7 @@ public class OrderTriggerTest {
 		System.assertEquals(200, accAfterUpdate.Chiffre_d_affaire__c);
 	}
     
-    // Méthode de test qui met à jour un compte avec un chiffre d'affaire existant 
+    // Méthode de test qui met à jour un compte avec un chiffre d'affaire déjà existant 
     @isTest
 	static void updateAccountCAWithOrders(){
 		Account acc = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Name = 'AccountTest2'];

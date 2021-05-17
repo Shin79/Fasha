@@ -7,6 +7,7 @@ public class TeamOrdersController {
                             owner.Name ordName,
                             AVG(TotalAmount) ordAvg 
                             FROM Order 
+                            WHERE Status = 'Ordered'
                             GROUP BY owner.Name];
           for(AggregateResult ar : groupedResults){
               System.debug('Nombre de commandes' + ar.get('ordCount'));

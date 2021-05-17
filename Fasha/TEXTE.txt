@@ -1,0 +1,22 @@
+@isTest
+	static void updateAccountRevenue_withAccountMultipleOrders(){
+		Test.startTest();
+		UpdateAccountsAR_Batch updateAccountsB = new UpdateAccountsAR_Batch();
+		Database.executeBatch(updateAccountsB);
+		Test.stopTest();
+		Account accAfterUpdate = [SELECT Id, AnnualRevenue FROM Account WHERE Name = 'AccMultipleOrders'];
+		System.assertEquals(1000, accAfterUpdate.AnnualRevenue,'The revenu should be 1000');
+	}
+    
+Ekaterina Geta12:29
+trigger OrderTrigger on Order (before update, after update ) {
+    if (Trigger.isAfter) {
+            List<Order> triggerOrder = Trigger.new;
+
+        OrderTriggerHandler handler = new OrderTriggerHandler();
+       	
+        handler.updateAccountsFromOrder(Trigger.oldMap, Trigger.newMap);
+    }else {
+        for(Order newOrder : Trigger.new){
+            if (newOrder.TotalAmount != null && newOrder.Shipment_Cost__c != null){
+            newOrder.NetAmount__c = newOrder.TotalAmount- newOrder.Ship
