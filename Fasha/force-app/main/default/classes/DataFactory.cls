@@ -17,12 +17,13 @@ public class DataFactory {
             UnitPrice = 300,
             IsActive = true
         );
-        Insert pbe;
+        insert pbe;
 
         // Création d'une liste de commandes 
         List<Order> orders = new List<Order>();
         for(Integer i=0;i<numberOfOrders;i++){
             Order o1 = new Order(AccountId = acc1.Id, Pricebook2Id=pbe.Pricebook2Id, EffectiveDate=date.today(), Status='Draft');
+            o1.Name = 'order ' + i;
             orders.add(o1);
         }
         insert orders;
@@ -38,4 +39,5 @@ public class DataFactory {
         }
         insert orderItems;
     }
+    
 }

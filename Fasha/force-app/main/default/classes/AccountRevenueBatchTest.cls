@@ -3,7 +3,7 @@ public class AccountRevenueBatchTest{
     @testSetup
     static void testSetUp(){
         // Appel de la classe de données de test 
-        DataFactory.dataTestCreation(100);
+        DataFactory.dataTestCreation(200);
         Order order = [SELECT Id,Status FROM Order LIMIT 1];
         // On met à jour le statut de la commande à "Ordered"
         order.Status = 'Ordered';
@@ -21,6 +21,6 @@ public class AccountRevenueBatchTest{
                                   WHERE Status = 'Ordered') 
                                   FROM Account 
                                   WHERE Id IN (SELECT AccountId FROM Order WHERE Status = 'Ordered')];      
-        System.assertEquals(135000, accountsUpdated[0].Chiffre_d_affaire__c );
+        System.assertEquals(270000, accountsUpdated[0].Chiffre_d_affaire__c );
     }
 }

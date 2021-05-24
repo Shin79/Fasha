@@ -12,8 +12,9 @@ public class UpdateAccount {
             // Sinon, on met le montant de la commande dans le champ CA du compte
                 acc.Chiffre_d_affaire__c = amount.get(acc.Id); 
             }
-        // On met à jour la requête
-        update(accToUpdate);    
+            
         }
+        // On met à jour la requête
+        update(accToUpdate);
     }
 }
